@@ -55,8 +55,8 @@ class GoogleAuthController implements RequestHandlerInterface
         $redirectUri = $conf['url'] . "/auth/google";
 
         $provider = new Google([
-            'clientId' => trim($this->settings->get('saleksin-auth-google.app_id')),
-            'clientSecret' => trim($this->settings->get('saleksin-auth-google.app_secret')),
+            'clientId' => trim($this->settings->get('saleksin-auth-google.client_id')),
+            'clientSecret' => trim($this->settings->get('saleksin-auth-google.client_secret')),
             'redirectUri' => $redirectUri,
             'approvalPrompt'  => 'force',
             'hostedDomain'    => null,
