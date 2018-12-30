@@ -9,20 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Flarum\Auth\Facebook;
+namespace Saleksin\Auth\Google;
 
 use Exception;
 use Flarum\Forum\Auth\Registration;
 use Flarum\Forum\Auth\ResponseFactory;
 use Flarum\Settings\SettingsRepositoryInterface;
-use League\OAuth2\Client\Provider\Facebook;
-use League\OAuth2\Client\Provider\FacebookUser;
+use League\OAuth2\Client\Provider\Google;
+use League\OAuth2\Client\Provider\GoogleUser;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 
-class FacebookAuthController implements RequestHandlerInterface
+class GoogleAuthController implements RequestHandlerInterface
 {
     /**
      * @var ResponseFactory
@@ -46,18 +46,21 @@ class FacebookAuthController implements RequestHandlerInterface
     /**
      * @param Request $request
      * @return ResponseInterface
-     * @throws \League\OAuth2\Client\Provider\Exception\FacebookProviderException
+     * @throws \League\OAuth2\Client\Provider\Exception\GoogleProviderException
      * @throws Exception
      */
     public function handle(Request $request): ResponseInterface
     {
-        $redirectUri = (string) $request->getAttribute('originalUri', $request->getUri())->withQuery('');
+        $conf = app('flarum.config');
+        $redirectUri = $conf['url'] . "/auth/google";
 
-        $provider = new Facebook([
-            'clientId' => $this->settings->get('flarum-auth-facebook.app_id'),
-            'clientSecret' => $this->settings->get('flarum-auth-facebook.app_secret'),
+        $provider = new Google([
+            'clientId' => trim($this->settings->get('saleksin-auth-google.app_id')),
+            'clientSecret' => trim($this->settings->get('saleksin-auth-google.app_secret')),
             'redirectUri' => $redirectUri,
-            'graphApiVersion' => 'v3.0',
+            'approvalPrompt'  => 'force',
+            'hostedDomain'    => null,
+            'accessType'      => 'offline',
         ]);
 
         $session = $request->getAttribute('session');
@@ -82,15 +85,15 @@ class FacebookAuthController implements RequestHandlerInterface
 
         $token = $provider->getAccessToken('authorization_code', compact('code'));
 
-        /** @var FacebookUser $user */
+        /** @var GoogleUser $user */
         $user = $provider->getResourceOwner($token);
 
         return $this->response->make(
-            'facebook', $user->getId(),
+            'google', $user->getId(),
             function (Registration $registration) use ($user) {
                 $registration
                     ->provideTrustedEmail($user->getEmail())
-                    ->provideAvatar($user->getPictureUrl())
+                    ->provideAvatar($user->getAvatar())
                     ->suggestUsername($user->getName())
                     ->setPayload($user->toArray());
             }

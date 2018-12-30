@@ -1,7 +1,5 @@
-import app from 'flarum/app';
+import GoogleSettingsModal from './components/GoogleSettingsModal';
 
-import FacebookSettingsModal from './components/FacebookSettingsModal';
-
-app.initializers.add('flarum-auth-facebook', () => {
-  app.extensionSettings['flarum-auth-facebook'] = () => app.modal.show(new FacebookSettingsModal());
+app.initializers.add('saleksin-auth-google', () => {
+  app.extensionSettings['saleksin-auth-google'] = () => app.modal.show(new GoogleSettingsModal());
 });

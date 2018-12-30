@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Flarum\Auth\Facebook\FacebookAuthController;
+use Saleksin\Auth\Google\GoogleAuthController;
 use Flarum\Extend;
 
 return [
@@ -21,5 +21,8 @@ return [
         ->js(__DIR__.'/js/dist/admin.js'),
 
     (new Extend\Routes('forum'))
-        ->get('/auth/facebook', 'auth.facebook', FacebookAuthController::class),
+        ->get('/auth/google', 'auth.google', GoogleAuthController::class),
+
+    (new Extend\Locales(__DIR__ . '/locale')),
+
 ];
