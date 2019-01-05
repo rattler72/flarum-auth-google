@@ -24,8 +24,8 @@ Make sure you configure app ID and secret in extension settings.
 
 ## Support
 
-If you want to buy me a beer, or a coffee, write me an email, and I will set up
-Patreon account:)
+If you like this extension,  you can
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/mYcXNyqkd)
 
 ## Links
 
