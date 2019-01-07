@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 
 class GoogleAuthController implements RequestHandlerInterface
 {
@@ -70,7 +71,7 @@ class GoogleAuthController implements RequestHandlerInterface
 
         if (! $code) {
             $authUrl = $provider->getAuthorizationUrl();
-            \Log::info('OAuth State = '.var_export($provider->getState(), 1));
+            Log::info('OAuth State = '.var_export($provider->getState(), 1));
             $session->put('oauth2state', $provider->getState());
 
             return new RedirectResponse($authUrl.'&display=popup');
