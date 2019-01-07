@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Saleksin\Auth\Google\GoogleAuthController;
+use Coldsnake\Auth\Google\GoogleAuthController;
 use Flarum\Extend;
 
 return [
