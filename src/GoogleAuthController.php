@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Saleksin\Auth\Google;
+namespace Coldsnake\Auth\Google;
 
 use Exception;
 use Flarum\Forum\Auth\Registration;
@@ -70,6 +70,7 @@ class GoogleAuthController implements RequestHandlerInterface
 
         if (! $code) {
             $authUrl = $provider->getAuthorizationUrl();
+            \Log::info('OAuth State = '.var_export($provider->getState(), 1));
             $session->put('oauth2state', $provider->getState());
 
             return new RedirectResponse($authUrl.'&display=popup');
@@ -89,7 +90,8 @@ class GoogleAuthController implements RequestHandlerInterface
         $user = $provider->getResourceOwner($token);
 
         return $this->response->make(
-            'google', $user->getId(),
+            'google',
+            $user->getId(),
             function (Registration $registration) use ($user) {
                 $registration
                     ->provideTrustedEmail($user->getEmail())

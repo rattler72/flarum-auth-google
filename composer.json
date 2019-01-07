@@ -1,10 +1,14 @@
 {
-    "name": "saleksin/flarum-auth-google",
+    "name": "rattler72/flarum-auth-google",
     "description": "Allow users to log in with Google.",
     "type": "flarum-extension",
     "keywords": ["authentication"],
     "license": "MIT",
     "authors": [
+        {
+            "name": "Stacey Friesen",
+            "email": "staceyfriesen@gmail.com"
+        },
         {
             "name": "Toby Zerner",
             "email": "toby.zerner@gmail.com"
@@ -24,7 +28,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Saleksin\\Auth\\Google\\": "src/"
+            "Coldsnake\\Auth\\Google\\": "src/"
         }
     },
     "extra": {
