@@ -65,6 +65,7 @@ class GoogleAuthController implements RequestHandlerInterface
 
         $session = $request->getAttribute('session');
         $queryParams = $request->getQueryParams();
+        app('log')->info('Query Params = '.var_export($queryParams, 1));
 
         $code = array_get($queryParams, 'code');
 
