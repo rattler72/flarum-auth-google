@@ -89,6 +89,11 @@ class GoogleAuthController implements RequestHandlerInterface
 
         /** @var GoogleUser $user */
         $user = $provider->getResourceOwner($token);
+        app('log')->info('User = '.$user->getEmail());
+
+        if ((strpos($user->getEmail(), 'nursenextdoor.com') === false) && (strpos($user->getEmail(), 'sixfactor.com') === false)) {
+            throw new Exception('Not authorized.');
+        }
 
         return $this->response->make(
             'google',
