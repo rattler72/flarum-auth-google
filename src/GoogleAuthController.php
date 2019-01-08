@@ -59,7 +59,7 @@ class GoogleAuthController implements RequestHandlerInterface
             'clientSecret' => trim($this->settings->get('saleksin-auth-google.client_secret')),
             'redirectUri' => $redirectUri,
             'approvalPrompt'  => 'force',
-            'hostedDomain'    => null,
+            'hostedDomain'    => 'nursenextdoor.com',
             'accessType'      => 'offline',
         ]);
 
