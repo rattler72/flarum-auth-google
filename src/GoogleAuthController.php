@@ -13,7 +13,7 @@ namespace Coldsnake\Auth\Google;
 
 use Exception;
 use Flarum\Forum\Auth\Registration;
-use GoogleResponseFactory as ResponseFactory;
+use Coldsnake\Auth\Google\GoogleResponseFactory as ResponseFactory;
 use Flarum\Settings\SettingsRepositoryInterface;
 use League\OAuth2\Client\Provider\Google;
 use League\OAuth2\Client\Provider\GoogleUser;
