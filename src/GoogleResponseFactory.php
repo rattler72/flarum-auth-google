@@ -69,15 +69,10 @@ class GoogleResponseFactory
         ];
 
         $controller = CreateUserController::class;
-        // $actor = $request->getAttribute('actor');
 
         // use admin actor
         $actor = $this->users->findOrFail(1);
         $body = ['data' => ['attributes' => $userdata]];
-
-        app('log')->info('Actor = '.var_export($actor, 1));
-        app('log')->info('Body = '.var_export($body, 1));
-
         $response = $this->api->send($controller, $actor, [], $body);
 
         $body = json_decode($response->getBody());
