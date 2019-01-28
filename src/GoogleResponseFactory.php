@@ -10,6 +10,7 @@ use Flarum\Http\Rememberer;
 use Flarum\Api\Controller\CreateUserController;
 use Flarum\User\RegistrationToken;
 use Flarum\User\User;
+use Flarum\Forum\Auth\Registration;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class GoogleResponseFactory
