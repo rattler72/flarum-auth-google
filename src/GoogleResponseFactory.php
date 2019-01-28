@@ -8,9 +8,11 @@ use Flarum\User\UserRepository;
 use Flarum\Api\Client;
 use Flarum\Http\Rememberer;
 use Flarum\Api\Controller\CreateUserController;
-use Flarum\Forum\Auth\ResponseFactory;
+use Flarum\User\RegistrationToken;
+use Flarum\User\User;
+use Zend\Diactoros\Response\HtmlResponse;
 
-class GoogleResponseFactory extends ResponseFactory
+class GoogleResponseFactory
 {
     /**
      * @var \Flarum\User\UserRepository
@@ -31,7 +33,7 @@ class GoogleResponseFactory extends ResponseFactory
     {
         $this->api = $api;
         $this->users = $users;
-        parent::__construct($rememberer);
+        $this->rememberer = $rememberer;
     }
 
 
@@ -88,6 +90,23 @@ class GoogleResponseFactory extends ResponseFactory
         } else {
             throw new \Exception('Could not login user.');
         }
+    }
+
+    private function makeResponse(array $payload): HtmlResponse
+    {
+        $content = sprintf(
+            '<script>window.close(); window.opener.app.authenticationComplete(%s);</script>',
+            json_encode($payload)
+        );
+
+        return new HtmlResponse($content);
+    }
+
+    private function makeLoggedInResponse(User $user)
+    {
+        $response = $this->makeResponse(['loggedIn' => true]);
+
+        return $this->rememberer->rememberUser($response, $user->id);
     }
 
     // Generates a strong password of N length containing at least one lower case letter,
