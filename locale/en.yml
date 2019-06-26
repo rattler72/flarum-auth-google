@@ -18,4 +18,5 @@ saleksin-auth-google:
 
     # These translations are used in the Log In modal dialog.
     log_in:
-      with_google_button: Log In with Google
+      with_google_button: Login with Google
+      footer: Nurse Next Door Community
