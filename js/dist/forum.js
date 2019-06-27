@@ -219,6 +219,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/components/LogInModal */ "flarum/components/LogInModal");
 /* harmony import */ var flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _components_AdminLoginPage__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/AdminLoginPage */ "./src/forum/components/AdminLoginPage.js");
+/* harmony import */ var flarum_components_SettingsPage__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! flarum/components/SettingsPage */ "flarum/components/SettingsPage");
+/* harmony import */ var flarum_components_SettingsPage__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(flarum_components_SettingsPage__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var flarum_models_Group__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! flarum/models/Group */ "flarum/models/Group");
+/* harmony import */ var flarum_models_Group__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(flarum_models_Group__WEBPACK_IMPORTED_MODULE_7__);
+
+
 
 
 
@@ -245,7 +251,30 @@ flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.initializers.add('saleksin-aut
   flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.routes['auth.login.admin'] = {
     path: '/auth/login/admin',
     component: _components_AdminLoginPage__WEBPACK_IMPORTED_MODULE_5__["default"].component()
-  };
+  }; // remove ability to edit email and password 
+
+  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_SettingsPage__WEBPACK_IMPORTED_MODULE_6___default.a.prototype, 'settingsItems', function (items) {
+    var user = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.session.user;
+    var is_admin = false;
+
+    if (user.id() == '1') {
+      var _arr = Object.entries(user.groups());
+
+      for (var _i = 0; _i < _arr.length; _i++) {
+        var _arr$_i = _arr[_i],
+            key = _arr$_i[0],
+            value = _arr$_i[1];
+
+        if (value.id() === flarum_models_Group__WEBPACK_IMPORTED_MODULE_7___default.a.ADMINISTRATOR_ID) {
+          is_admin = true;
+        }
+      }
+    }
+
+    if (!is_admin) {
+      items.remove('account');
+    }
+  });
 });
 
 /***/ }),
@@ -294,6 +323,17 @@ module.exports = flarum.core.compat['components/LogInModal'];
 
 /***/ }),
 
+/***/ "flarum/components/SettingsPage":
+/*!****************************************************************!*\
+  !*** external "flarum.core.compat['components/SettingsPage']" ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/SettingsPage'];
+
+/***/ }),
+
 /***/ "flarum/extend":
 /*!***********************************************!*\
   !*** external "flarum.core.compat['extend']" ***!
@@ -302,6 +342,17 @@ module.exports = flarum.core.compat['components/LogInModal'];
 /***/ (function(module, exports) {
 
 module.exports = flarum.core.compat['extend'];
+
+/***/ }),
+
+/***/ "flarum/models/Group":
+/*!*****************************************************!*\
+  !*** external "flarum.core.compat['models/Group']" ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['models/Group'];
 
 /***/ })
 
