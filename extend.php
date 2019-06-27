@@ -10,6 +10,7 @@
  */
 
 use Coldsnake\Auth\Google\GoogleAuthController;
+use Coldsnake\Auth\Google\AdminLoginController;
 use Flarum\Extend;
 
 return [
@@ -23,6 +24,8 @@ return [
     (new Extend\Routes('forum'))
         ->get('/auth/google', 'auth.google', GoogleAuthController::class),
 
-    (new Extend\Locales(__DIR__ . '/locale')),
+    (new Extend\Frontend('forum'))
+        ->route('/auth/login/admin', 'auth.login.admin'),
 
+    (new Extend\Locales(__DIR__ . '/locale')),
 ];

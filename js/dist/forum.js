@@ -109,6 +109,96 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _inheritsLoose; });
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  subClass.__proto__ = superClass;
+}
+
+/***/ }),
+
+/***/ "./src/forum/components/AdminLoginPage.js":
+/*!************************************************!*\
+  !*** ./src/forum/components/AdminLoginPage.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return AdminLoginPage; });
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/LogInModal */ "flarum/components/LogInModal");
+/* harmony import */ var flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * The `AdminLoginPage` component shows post which user Mentioned at
+ */
+
+var AdminLoginPage =
+/*#__PURE__*/
+function (_LogInModal) {
+  Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(AdminLoginPage, _LogInModal);
+
+  function AdminLoginPage() {
+    return _LogInModal.apply(this, arguments) || this;
+  }
+
+  var _proto = AdminLoginPage.prototype;
+
+  _proto.init = function init() {
+    _LogInModal.prototype.init.call(this);
+  };
+
+  _proto.className = function className() {
+    return 'AdminLoginPage Modal--large';
+  };
+
+  _proto.title = function title() {
+    return app.translator.trans('saleksin-auth-google.forum.log_in.admin_form');
+  };
+
+  _proto.body = function body() {
+    return [m("div", {
+      className: "Form Form--centered"
+    }, this.fields().toArray())];
+  };
+
+  _proto.onsubmit = function onsubmit(e) {
+    e.preventDefault();
+    this.loading = true;
+    var identification = this.identification();
+    var password = this.password();
+    var remember = this.remember();
+    app.session.login({
+      identification: identification,
+      password: password,
+      remember: remember
+    }, {
+      errorHandler: this.onerror.bind(this)
+    }).then(function () {
+      return window.location.href = "/";
+    }, this.loaded.bind(this));
+  };
+
+  return AdminLoginPage;
+}(flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_1___default.a);
+
+
+
+/***/ }),
+
 /***/ "./src/forum/index.js":
 /*!****************************!*\
   !*** ./src/forum/index.js ***!
@@ -128,7 +218,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_components_LogInButton__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_components_LogInButton__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/components/LogInModal */ "flarum/components/LogInModal");
 /* harmony import */ var flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_4__);
-var _this = undefined;
+/* harmony import */ var _components_AdminLoginPage__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/AdminLoginPage */ "./src/forum/components/AdminLoginPage.js");
 
 
 
@@ -137,34 +227,25 @@ var _this = undefined;
 
 flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.initializers.add('saleksin-auth-google', function () {
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_LogInButtons__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'items', function (items) {
-    console.log('Login items...');
-    console.log(items);
     items.add('google', m(flarum_components_LogInButton__WEBPACK_IMPORTED_MODULE_3___default.a, {
       className: "Button LogInButton--nnd",
       icon: "nnd-btn fab fa-google",
       path: "/auth/google"
     }, flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('saleksin-auth-google.forum.log_in.with_google_button')));
   });
-
-  flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_4___default.a.prototype.me = function () {
-    return this;
-  };
-
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["override"])(flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_4___default.a.prototype, 'body', function (original) {
-    console.log('Body overriding...');
-    var og = original();
-    console.log(og);
-    console.log(_this);
     return [m(flarum_components_LogInButtons__WEBPACK_IMPORTED_MODULE_2___default.a, null)];
   });
   Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["override"])(flarum_components_LogInModal__WEBPACK_IMPORTED_MODULE_4___default.a.prototype, 'footer', function (original) {
-    console.log('Body overriding...');
-    var og = original();
-    console.log(og);
     return [m("p", {
       className: "LogInModal-signUp"
     }, flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('saleksin-auth-google.forum.log_in.footer'))];
-  });
+  }); // this is just for the admin login
+
+  flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.routes['auth.login.admin'] = {
+    path: '/auth/login/admin',
+    component: _components_AdminLoginPage__WEBPACK_IMPORTED_MODULE_5__["default"].component()
+  };
 });
 
 /***/ }),
