@@ -13,6 +13,9 @@ use Flarum\User\User;
 use Flarum\Forum\Auth\Registration;
 use Zend\Diactoros\Response\HtmlResponse;
 use GuzzleHttp\Client as HttpClient;
+use Flarum\Foundation\Application;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 
 class GoogleResponseFactory
 {
@@ -31,11 +34,17 @@ class GoogleResponseFactory
      */
     protected $rememberer;
 
-    public function __construct(Client $api, Rememberer $rememberer, UserRepository $users)
+    /**
+     * @var Path
+     */
+    protected $path;
+
+    public function __construct(Client $api, Rememberer $rememberer, UserRepository $users, Application $app)
     {
         $this->api = $api;
         $this->users = $users;
         $this->rememberer = $rememberer;
+        $this->path = $app->storagePath();
     }
 
 
@@ -53,6 +62,16 @@ class GoogleResponseFactory
                     $httpClient = new HttpClient();
                     $res = $httpClient->request('GET', $provided['avatar_url']);
                     if ($res->getStatusCode() != 404 && $res->getStatusCode() != 500){
+
+                        $contents = file_get_contents($provided['avatar_url']);
+                        $user_dir = $this->path.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id;
+                        $filename = 'profile_'.$user->id.'.jpg';
+                        $fs = new Filesystem(new Local($user_dir));
+                        $fs->put($filename,$contents);
+
+                        app('log')->info('Profile pic path = '.$user_dir.DIRECTORY_SEPARATOR.$filename);
+                        
+                        // $user->avatar_url = $user_dir.DIRECTORY_SEPARATOR.$filename;
                         $user->avatar_url = $provided['avatar_url'];
                         $user->save();
                     }
