@@ -12,6 +12,7 @@ use Flarum\User\RegistrationToken;
 use Flarum\User\User;
 use Flarum\Forum\Auth\Registration;
 use Zend\Diactoros\Response\HtmlResponse;
+use GuzzleHttp\Client as HttpClient;
 
 class GoogleResponseFactory
 {
@@ -45,8 +46,17 @@ class GoogleResponseFactory
             if (empty($user->avatar_url)) {
                 $configureRegistration($registration = new Registration);
                 $provided = $registration->getProvided();
-                $user->avatar_url = $provided['avatar_url'];
-                $user->save();
+
+                $target = 'photo.jpg';
+                $length = strlen($target);
+                if (!empty($provided['avatar_url']) && (substr($provided['avatar_url'], -$length) === $target)){
+                    $httpClient = new HttpClient();
+                    $res = $httpClient->request('GET', $provided['avatar_url']);
+                    if ($res->getStatusCode() != 404 && $res->getStatusCode() != 500){
+                        $user->avatar_url = $provided['avatar_url'];
+                        $user->save();
+                    }
+                }
             }
             return $this->makeLoggedInResponse($user);
         }
