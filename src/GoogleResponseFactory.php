@@ -77,7 +77,7 @@ class GoogleResponseFactory
 
                         $profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
                         $public_dir = realpath($this->public_path.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'avatars'.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id);
-                        $public_url = $public_dir.DIRECTORY_SEPARATOR.$filename;
+                        $public_url = $this->htmlpath($public_dir.DIRECTORY_SEPARATOR.$filename);
 
                         app('log')->info('Profile pic path = '.$profile_path);
                         app('log')->info('Public Profile pic url = '.$public_url);
@@ -135,6 +135,12 @@ class GoogleResponseFactory
         } else {
             throw new \Exception('Could not login user.');
         }
+    }
+
+    private function htmlpath($relative_path) {
+        $realpath=realpath($relative_path);
+        $htmlpath=str_replace($_SERVER['DOCUMENT_ROOT'],'',$realpath);
+        return $htmlpath;
     }
 
     private function makeResponse(array $payload): HtmlResponse
