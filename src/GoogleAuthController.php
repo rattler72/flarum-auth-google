@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
+use Zend\Diactoros\Response\HtmlResponse;
 
 class GoogleAuthController implements RequestHandlerInterface
 {
@@ -92,7 +93,8 @@ class GoogleAuthController implements RequestHandlerInterface
         app('log')->info('User = '.$user->getEmail());
 
         if ((strpos($user->getEmail(), 'nursenextdoor.com') === false) && (strpos($user->getEmail(), 'sixfactor.com') === false)) {
-            throw new Exception('Not authorized.');
+            // throw new Exception('Not authorized.');
+            return new HtmlResponse('Not authorized',403);
         }
 
         return $this->response->make(
