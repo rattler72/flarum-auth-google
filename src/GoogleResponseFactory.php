@@ -39,12 +39,18 @@ class GoogleResponseFactory
      */
     protected $path;
 
+    /**
+     * @var PublicPath
+     */
+    protected $public_path;
+
     public function __construct(Client $api, Rememberer $rememberer, UserRepository $users, Application $app)
     {
         $this->api = $api;
         $this->users = $users;
         $this->rememberer = $rememberer;
         $this->path = $app->storagePath();
+        $this->public_path = $app->publicPath();
     }
 
 
@@ -70,7 +76,7 @@ class GoogleResponseFactory
                         $fs->put($filename,$contents);
 
                         $profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
-                        $public_dir = $app->publicPath().DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id;
+                        $public_dir = $this->public_path.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id;
                         $public_url = url($public_dir.DIRECTORY_SEPARATOR.$filename);
 
                         app('log')->info('Profile pic path = '.$profile_path);
