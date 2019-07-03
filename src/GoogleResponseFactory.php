@@ -76,7 +76,7 @@ class GoogleResponseFactory
                         $fs->put($filename,$contents);
 
                         $profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
-                        $public_dir = $this->htmlpath($this->public_path.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'avatars'.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id);
+                        $public_dir = $this->normalize_path($this->public_path.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'avatars'.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id);
                         $public_url = $public_dir.DIRECTORY_SEPARATOR.$filename;
 
                         app('log')->info('Profile pic path = '.$profile_path);
@@ -141,6 +141,25 @@ class GoogleResponseFactory
         $realpath=realpath($relative_path);
         $htmlpath=str_replace($_SERVER['DOCUMENT_ROOT'],'',$realpath);
         return $htmlpath;
+    }
+
+    private function normalize_path($path, $pwd = '/') {
+        if (!isset($path[0]) || $path[0] !== '/') {
+                $result = explode('/', getcwd());
+        } else {
+                $result = array('');
+        }
+        $parts = explode('/', $path);
+        foreach($parts as $part) {
+            if ($part === '' || $part == '.') {
+                    continue;
+            } if ($part == '..') {
+                    array_pop($result);
+            } else {
+                    $result[] = $part;
+            }
+        }
+        return implode('/', $result);
     }
 
     private function makeResponse(array $payload): HtmlResponse
