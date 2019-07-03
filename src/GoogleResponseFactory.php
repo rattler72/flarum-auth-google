@@ -44,7 +44,7 @@ class GoogleResponseFactory
         $this->api = $api;
         $this->users = $users;
         $this->rememberer = $rememberer;
-        $this->path = $app->basePath().DIRECTORY_SEPARATOR.'storage';
+        $this->path = $app->storagePath();
     }
 
 
@@ -69,9 +69,10 @@ class GoogleResponseFactory
                         $fs = new Filesystem(new Local($user_dir));
                         $fs->put($filename,$contents);
 
-                        app('log')->info('Profile pic path = '.$user_dir.DIRECTORY_SEPARATOR.$filename);
+                        $profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
+                        app('log')->info('Profile pic path = '.$profile_path);
 
-                        // $user->avatar_url = $user_dir.DIRECTORY_SEPARATOR.$filename;
+                        // $user->avatar_url = $profile_path;
                         $user->avatar_url = $provided['avatar_url'];
                         $user->save();
                     }
