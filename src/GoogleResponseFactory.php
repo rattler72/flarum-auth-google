@@ -44,6 +44,11 @@ class GoogleResponseFactory
      */
     protected $public_path;
 
+    /**
+     * @var SiteUrl
+     */
+    protected $site_url;
+
     public function __construct(Client $api, Rememberer $rememberer, UserRepository $users, Application $app)
     {
         $this->api = $api;
@@ -51,6 +56,8 @@ class GoogleResponseFactory
         $this->rememberer = $rememberer;
         $this->path = $app->storagePath();
         $this->public_path = $app->publicPath();
+        $conf = app('flarum.config');
+        $this->site_url = $conf['url'];
     }
 
 
@@ -76,11 +83,12 @@ class GoogleResponseFactory
                         $fs->put($filename,$contents);
 
                         $profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
-                        $public_dir = $this->normalize_path($this->public_path.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'avatars'.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id);
+                        $public_dir = $this->normalize_path($this->site_url.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'avatars'.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id);
                         $public_url = $public_dir.DIRECTORY_SEPARATOR.$filename;
 
                         app('log')->info('Profile pic path = '.$profile_path);
                         app('log')->info('Public Profile pic url = '.$public_url);
+                        
 
                         // $user->avatar_url = $profile_path;
                         $user->avatar_url = $provided['avatar_url'];
