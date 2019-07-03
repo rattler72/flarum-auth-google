@@ -41,6 +41,11 @@ class GoogleResponseFactory
     public function make(string $provider, string $identifier, callable $configureRegistration): ResponseInterface
     {
         if ($user = LoginProvider::logIn($provider, $identifier)) {
+            if (empty($user->avatar_url)) {
+                $provided = $registration->getProvided();
+                $user->avatar_url = $provided['avatar_url'];
+                $user->save();
+            }
             return $this->makeLoggedInResponse($user);
         }
 
@@ -65,7 +70,8 @@ class GoogleResponseFactory
             'username' => $username,
             'email' => $provided['email'],
             'password' => $password,
-            'isEmailConfirmed' => 1
+            'isEmailConfirmed' => 1,
+            'avatarUrl' => $provided['avatar_url'],
         ];
 
         $controller = CreateUserController::class;
