@@ -40,8 +40,10 @@ class GoogleResponseFactory
 
     public function make(string $provider, string $identifier, callable $configureRegistration): ResponseInterface
     {
+        $provided = null;
         if ($user = LoginProvider::logIn($provider, $identifier)) {
             if (empty($user->avatar_url)) {
+                $configureRegistration($registration = new Registration);
                 $provided = $registration->getProvided();
                 $user->avatar_url = $provided['avatar_url'];
                 $user->save();
@@ -49,9 +51,10 @@ class GoogleResponseFactory
             return $this->makeLoggedInResponse($user);
         }
 
-        $configureRegistration($registration = new Registration);
-
-        $provided = $registration->getProvided();
+        if (!$provided){
+            $configureRegistration($registration = new Registration);
+            $provided = $registration->getProvided();
+        }
 
         if (! empty($provided['email']) && $user = User::where(array_only($provided, 'email'))->first()) {
             $user->loginProviders()->create(compact('provider', 'identifier'));
