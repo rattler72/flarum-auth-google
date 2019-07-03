@@ -22,6 +22,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Response\HtmlResponse;
+use Google_Client;
+use Google_Service_Directory;
+use GuzzleHttp\Client as HttpClient;
+
 
 class GoogleAuthController implements RequestHandlerInterface
 {
@@ -96,6 +100,33 @@ class GoogleAuthController implements RequestHandlerInterface
             // throw new Exception('Not authorized.');
             return new HtmlResponse('Not authorized',403);
         }
+
+        // get user info from care central... find out role
+        $httpClient = new HttpClient();
+        $res = $httpClient->get('https://carecentral.nursenextdoor.com/api/simpleuser/'.$user->getEmail().'/HGUWYDG2374g09mas');
+        $body = $res->getBody()->getContents();
+        $cc_user = json_decode($body);
+
+        app('log')->info('User API response = '.var_export($cc_user, 1));
+        app('log')->info('User Role = '.$cc_user->data->role_id);
+
+        $accepted_role_ids = [1,5,6,7,10];
+        if (!in_array($cc_user->data->role_id, $accepted_role_ids)) {
+            app('log')->info('role is invalid!');
+            return new HtmlResponse('Not authorized',403);
+        }
+
+        // putenv('GOOGLE_APPLICATION_CREDENTIALS='.env('GOOGLE_CREDS', '/home/nndport/google.json'));
+        //
+        // $this->client = new Google_Client();
+        // $this->client->useApplicationDefaultCredentials();
+        // $this->client->setApplicationName("Nurse Next Door CD Community");
+        // $this->client->setScopes(['https://www.googleapis.com/auth/admin.directory.user',
+        //                           'https://www.googleapis.com/auth/admin.directory.group',
+        //                           'https://www.googleapis.com/auth/admin.directory.orgunit']);
+        // $this->client->setSubject('google.admin@nursenextdoor.com');
+        // $this->service = new Google_Service_Directory($this->client);
+
 
         return $this->response->make(
             'google',
