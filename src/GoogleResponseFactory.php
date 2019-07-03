@@ -76,7 +76,7 @@ class GoogleResponseFactory
                         $fs->put($filename,$contents);
 
                         $profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
-                        $public_dir = $this->public_path.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id;
+                        $public_dir = realpath($this->public_path.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'avatars'.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id);
                         $public_url = $public_dir.DIRECTORY_SEPARATOR.$filename;
 
                         app('log')->info('Profile pic path = '.$profile_path);
