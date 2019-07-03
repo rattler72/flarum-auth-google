@@ -70,7 +70,11 @@ class GoogleResponseFactory
                         $fs->put($filename,$contents);
 
                         $profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
+                        $public_dir = $app->publicPath().DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id;
+                        $public_url = url($public_dir.DIRECTORY_SEPARATOR.$filename);
+
                         app('log')->info('Profile pic path = '.$profile_path);
+                        app('log')->info('Public Profile pic url = '.$public_url);
 
                         // $user->avatar_url = $profile_path;
                         $user->avatar_url = $provided['avatar_url'];
