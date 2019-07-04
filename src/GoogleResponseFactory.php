@@ -64,8 +64,9 @@ class GoogleResponseFactory
     public function make(string $provider, string $identifier, callable $configureRegistration): ResponseInterface
     {
         $provided = null;
+        // Are they logged in?
         if ($user = LoginProvider::logIn($provider, $identifier)) {
-            if (empty($user->avatar_url)) {
+            if (empty($user->getAvatarUrlAttribute()) || (substr($user->getAvatarUrlAttribute(),0,4) === 'http')) {
                 $configureRegistration($registration = new Registration);
                 $provided = $registration->getProvided();
 
