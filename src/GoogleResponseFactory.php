@@ -69,6 +69,12 @@ class GoogleResponseFactory
                 $configureRegistration($registration = new Registration);
                 $provided = $registration->getProvided();
 
+                // remove any sizing params
+                $p = '?sz=';
+                if (strpos($provided['avatar_url'], $p)){
+                    $provided['avatar_url'] = substr($provided['avatar_url'], 0, strpos($provided['avatar_url'], $p));
+                }
+
                 $target = 'photo.jpg';
                 $length = strlen($target);
                 if (!empty($provided['avatar_url']) && (substr($provided['avatar_url'], -$length) === $target)){
@@ -82,14 +88,12 @@ class GoogleResponseFactory
                         $fs = new Filesystem(new Local($user_dir));
                         $fs->put($filename,$contents);
 
-                        $profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
+                        //$profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
                         $public_url = 'user'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.$filename;
 
-                        app('log')->info('Profile pic path = '.$profile_path);
                         app('log')->info('Public Profile pic url = '.$public_url);
 
-                        $user->avatar_url = $public_url;
-                        // $user->avatar_url = $provided['avatar_url'];
+                        $user->changeAvatarPath($public_url);
                         $user->save();
                     }
                 }
@@ -136,6 +140,35 @@ class GoogleResponseFactory
             $userId = $body->data->id;
             // log in as new user...
             $user = User::find($userId);
+
+            $p = '?sz=';
+            if (strpos($provided['avatar_url'], $p)){
+                $provided['avatar_url'] = substr($provided['avatar_url'], 0, strpos($provided['avatar_url'], $p));
+            }
+
+            $target = 'photo.jpg';
+            $length = strlen($target);
+            if (!empty($provided['avatar_url']) && (substr($provided['avatar_url'], -$length) === $target)){
+                $httpClient = new HttpClient();
+                $res = $httpClient->request('GET', $provided['avatar_url']);
+                if ($res->getStatusCode() != 404 && $res->getStatusCode() != 500){
+
+                    $contents = file_get_contents($provided['avatar_url']);
+                    $user_dir = $this->path.DIRECTORY_SEPARATOR.'user'.DIRECTORY_SEPARATOR.$user->id;
+                    $filename = 'profile_'.$user->id.'.jpg';
+                    $fs = new Filesystem(new Local($user_dir));
+                    $fs->put($filename,$contents);
+
+                    //$profile_path = realpath($user_dir.DIRECTORY_SEPARATOR.$filename);
+                    $public_url = 'user'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.$filename;
+
+                    app('log')->info('Public Profile pic url = '.$public_url);
+
+                    $user->changeAvatarPath($public_url);
+                    $user->save();
+                }
+            }
+
             $user->loginProviders()->create(compact('provider', 'identifier'));
             return $this->makeLoggedInResponse($user);
         } else {
